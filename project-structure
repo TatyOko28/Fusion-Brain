@@ -1,0 +1,14 @@
+fusion-brain-service/
+├── src/
+│   ├── config/
+│   ├── modules/
+│   │   └── images/
+│   ├── common/
+│   └── main.ts
+├── prisma/
+│   └── schema.prisma
+├── docker/
+├── docker-compose.yml
+├── Dockerfile
+├── .env.example
+└── README.md 

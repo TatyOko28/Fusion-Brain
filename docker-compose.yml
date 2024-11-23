@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "${PORT:-3001}:3000"
+    environment:
+      # App Configuration
+      - NODE_ENV=${NODE_ENV:-development}
+      - PORT=3000
+      - LOG_LEVEL=${LOG_LEVEL:-debug}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      
+      # Database Configuration
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-fusion_brain}
+      
+      # MinIO Configuration
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_USE_SSL=false
+      - MINIO_ACCESS_KEY=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_SECRET_KEY=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME:-images}
+      
+      # External Services
+      - FUSION_BRAIN_API_URL=${FUSION_BRAIN_API_URL}
+      - FUSION_BRAIN_API_KEY=${FUSION_BRAIN_API_KEY}
+      
+      # Health Check Configuration
+      - HEALTH_CHECK_DISK_THRESHOLD=${HEALTH_CHECK_DISK_THRESHOLD:-0.9}
+      - HEALTH_CHECK_MEMORY_HEAP_THRESHOLD=${HEALTH_CHECK_MEMORY_HEAP_THRESHOLD:-150}
+      - HEALTH_CHECK_MEMORY_RSS_THRESHOLD=${HEALTH_CHECK_MEMORY_RSS_THRESHOLD:-150}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    command: >
+      sh -c "
+        # Attendre que la base de données soit prête
+        sleep 5 &&
+        # Appliquer les migrations
+        npx prisma migrate deploy &&
+        # Démarrer l'application
+        npm run start:prod
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  postgres:
+    image: postgres:14
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=fusion_brain
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d fusion_brain"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_BUCKET_NAME=images
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  postgres_data:
+  minio_data:
+  logs: 
