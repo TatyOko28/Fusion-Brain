@@ -10,6 +10,8 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { PrismaHealthIndicator } from './indicators/prisma.health';
 import { MinioHealthIndicator } from './indicators/minio.health';
 import { ConfigService } from '@nestjs/config';
+import { join } from 'path';
+import { existsSync, mkdirSync } from 'fs';
 
 @ApiTags('health')
 @Controller('health')
@@ -22,7 +24,26 @@ export class HealthController {
     private prisma: PrismaHealthIndicator,
     private minio: MinioHealthIndicator,
     private config: ConfigService,
-  ) {}
+  ) {
+    this.ensureLogsDirectory();
+  }
+
+  private ensureLogsDirectory() {
+    const logsPath = this.getLogsPath();
+    if (!existsSync(logsPath)) {
+      mkdirSync(logsPath, { recursive: true });
+    }
+  }
+
+  private getLogsPath(): string {
+    // En développement, utiliser un chemin relatif au projet
+    if (this.config.get('NODE_ENV') !== 'production') {
+      return join(process.cwd(), 'logs');
+    }
+    
+    // En production, utiliser le chemin Docker
+    return '/app/logs';
+  }
 
   @Get()
   @HealthCheck()
@@ -34,8 +55,8 @@ export class HealthController {
       () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
       () => this.memory.checkRSS('memory_rss', 150 * 1024 * 1024),
       () => this.disk.checkStorage('storage', {
+        path: this.getLogsPath(),
         thresholdPercent: 0.9,
-        path: '/app/logs',
       }),
     ];
 
@@ -54,7 +75,7 @@ export class HealthController {
           return {
             'fusion-brain-api': { status: 'up' },
           };
-        } catch (error) {
+        } catch {
           return {
             'fusion-brain-api': {
               status: 'up',

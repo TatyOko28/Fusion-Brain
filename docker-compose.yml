@@ -13,7 +13,7 @@ services:
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
       
       # Database Configuration
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-fusion_brain}
+      - DATABASE_URL=${DATABASE_URL}
       
       # MinIO Configuration
       - MINIO_ENDPOINT=minio
@@ -32,17 +32,12 @@ services:
       - HEALTH_CHECK_MEMORY_HEAP_THRESHOLD=${HEALTH_CHECK_MEMORY_HEAP_THRESHOLD:-150}
       - HEALTH_CHECK_MEMORY_RSS_THRESHOLD=${HEALTH_CHECK_MEMORY_RSS_THRESHOLD:-150}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./logs:/app/logs
+      - ./logs:/app/logs:rw
     depends_on:
-      postgres:
-        condition: service_healthy
       minio:
         condition: service_healthy
     command: >
       sh -c "
-        # Attendre que la base de données soit prête
-        sleep 5 &&
         # Appliquer les migrations
         npx prisma migrate deploy &&
         # Démarrer l'application
@@ -54,23 +49,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-
-  postgres:
-    image: postgres:14
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=fusion_brain
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d fusion_brain"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
 
   minio:
     image: minio/minio
@@ -92,6 +70,5 @@ services:
       start_period: 10s
 
 volumes:
-  postgres_data:
   minio_data:
   logs: 
