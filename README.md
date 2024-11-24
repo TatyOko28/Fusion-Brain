@@ -24,25 +24,54 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository for image generation using Fusion Brain API.
 
-## Getting Started
+## Technologies Used
 
-### Prerequisites
+### Core Technologies
+- **NestJS** (v10.x) - Progressive Node.js framework
+- **TypeScript** (v5.x) - Typed JavaScript
+- **Node.js** (v18+) - JavaScript runtime
+
+### Database & Storage
+- **PostgreSQL** (v14) - Primary database
+- **Prisma** (v5.x) - ORM and database migrations
+- **MinIO** - Object storage for images
+
+### Image Processing
+- **Sharp** - High-performance image processing
+- **Fusion Brain API** - AI image generation
+
+### API Documentation & Testing
+- **Swagger/OpenAPI** - API documentation
+- **Jest** - Testing framework
+- **Supertest** - HTTP testing
+
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Docker** - Containerization
+- **Docker Compose** - Container orchestration
+
+### Security & Monitoring
+- **CORS** - Cross-Origin Resource Sharing
+- **Helmet** - HTTP security headers
+- **Class Validator** - Input validation
+- **Winston** - Logging
+
+## Prerequisites
 
 Before starting, ensure you have installed:
 1. Git
 2. Docker Desktop (latest version)
 3. Node.js (v18+)
 4. npm or yarn
-5. A Fusion Brain API key
 
-### Initial Setup
+## Initial Setup
 
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd fusion-brain
 ```
 
 2. Install dependencies:
@@ -50,50 +79,63 @@ cd fusion-brain
 npm install
 ```
 
-3. Set up environment files:
+3. Create and configure your `.env` file:
 ```bash
-# Development environment
-cp .env.example .env.development
+# Copy the example environment file
+cp .env.example .env
 
-# Production environment
-cp .env.example .env.production
-
-# Test environment
-cp .env.example .env.test
-```
-
-4. Configure your `.env` file:
-```env
-# Development API Configuration
+# Add the following configuration to your .env file:
+# API Configuration
 FUSION_BRAIN_API_URL=https://dev-api.fusion-brain.com/v1
-FUSION_BRAIN_API_KEY=dev-key-xxxxx
-PORT=3004
+FUSION_BRAIN_API_KEY=your-api-key-here
+
+# Database Configuration
+DATABASE_URL=postgresql://user:password@localhost:5433/fusion_brain
+
+# CORS Configuration
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3004
+
+# MinIO Configuration
+MINIO_ENDPOINT=localhost
+MINIO_PORT=9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET_NAME=fusion-brain
+MINIO_USE_SSL=false
 ```
 
-Production environment (.env.production):
-```env
-# Production API Configuration
-FUSION_BRAIN_API_URL=https://api.fusion-brain.com/v1
-FUSION_BRAIN_API_KEY=prod-key-xxxxx
-```
+## Services Setup
 
-### Database Setup
-
-1. Start PostgreSQL and MinIO:
+1. Start PostgreSQL and MinIO services:
 ```bash
-docker-compose up -d postgres minio
+docker-compose up -d
 ```
 
-2. Initialize the database:
+2. Verify services are running:
 ```bash
-# Generate Prisma client
+docker-compose ps
+```
+
+3. Configure MinIO:
+   - Access MinIO Console at http://localhost:9001
+   - Login with:
+     - Username: minioadmin
+     - Password: minioadmin
+   - Create a new bucket named 'fusion-brain'
+
+## Database Setup
+
+1. Generate Prisma client:
+```bash
 npx prisma generate
+```
 
-# Run initial migration
+2. Run initial migration:
+```bash
 npx prisma migrate dev --name init
 ```
 
-### Running the Application
+## Running the Application
 
 1. Start in development mode:
 ```bash
@@ -101,12 +143,10 @@ npm run start:dev
 ```
 
 2. Access the services:
-- API Documentation: http://localhost:3004/api
-- MinIO Console: http://localhost:9001
-  - Username: minioadmin
-  - Password: minioadmin
+   - API Documentation: http://localhost:3004/api
+   - MinIO Console: http://localhost:9001
 
-### Testing the Setup
+## Testing the Setup
 
 1. Check health status:
 ```bash
@@ -120,206 +160,67 @@ curl -X POST http://localhost:3004/images \
   -d '{"prompt":"test image","style":"anime"}'
 ```
 
-## Configuration
+## Environment Configurations
 
-### Environment Setup
+For different environments, you can create specific configuration files:
 
-1. Create environment files for different environments:
+1. Development environment:
 ```bash
-# Development environment
-cp .env.example .env.development
-
-# Production environment
-cp .env.example .env.production
-
-# Test environment
-cp .env.example .env.test
+cp .env .env.development
 ```
 
-### Fusion Brain API Configuration
-
-1. Development Setup:
-```env
-# .env.development
-FUSION_BRAIN_API_URL=https://dev-api.fusion-brain.com/v1
-FUSION_BRAIN_API_KEY=dev-key-xxxxx
-```
-
-2. Production Setup:
-```env
-# .env.production
-FUSION_BRAIN_API_URL=https://api.fusion-brain.com/v1
-FUSION_BRAIN_API_KEY=prod-key-xxxxx
-```
-
-3. Link appropriate environment file:
+2. Production environment:
 ```bash
-# For development
-ln -s .env.development .env
-
-# For production
-ln -s .env.production .env
+cp .env .env.production
 ```
 
-### Environment Features
-
-#### Development Mode
-- Mock images when no valid API key
-- Permissive health checks
-- Short API timeouts (5s)
-- Mock data fallbacks
-
-#### Production Mode
-- Strict API validation
-- No mock data
-- Strict health checks
-- Long API timeouts (30s)
-- Full error reporting
-
-### API Integration Issues
-
-1. API Key Issues:
+3. Test environment:
 ```bash
-# Check API key
-echo $FUSION_BRAIN_API_KEY
-
-# Verify endpoint
-curl -I $FUSION_BRAIN_API_URL
-```
-
-2. Mock Data Testing:
-```bash
-# Use mock data
-FUSION_BRAIN_API_KEY=dev-xxxxx npm run start:dev
-
-# Use real API
-FUSION_BRAIN_API_KEY=real-xxxxx npm run start:dev
-```
-
-3. Health Checks:
-```bash
-# Development health check
-curl http://localhost:3004/health
-
-# Production health check
-curl https://your-production-url/health
-```
-
-## Development
-
-### Running Tests
-
-1. Unit Tests:
-```bash
-npm run test
-```
-
-2. E2E Tests:
-```bash
-npm run test:e2e
-```
-
-3. Test Coverage:
-```bash
-npm run test:cov
-```
-
-### API Endpoints
-
-1. Create Image:
-```bash
-POST /images
-{
-  "prompt": "A beautiful sunset over mountains",
-  "style": "anime"
-}
-```
-
-2. Check Status:
-```bash
-GET /images/{id}/status
-```
-
-3. Get Image:
-```bash
-GET /images/{id}?size=original|thumbnail
-```
-
-4. List Images:
-```bash
-GET /images?page=1&limit=20&sortOrder=desc
-```
-
-### Database Management
-
-1. Create new migration:
-```bash
-npx prisma migrate dev --name <migration-name>
-```
-
-2. Reset database (development only):
-```bash
-npx prisma migrate reset
-```
-
-3. View database:
-```bash
-npx prisma studio
-```
-
-## Production Deployment
-
-1. Build production image:
-```bash
-docker build -t fusion-brain-api:prod .
-```
-
-2. Configure production environment:
-```bash
-cp .env.example .env.prod
-# Edit .env.prod with production values
-```
-
-3. Deploy:
-```bash
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-4. Verify deployment:
-```bash
-# Check health
-curl http://localhost:3004/health
-
-# Check logs
-docker-compose logs -f
+cp .env .env.test
 ```
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. Port Conflicts:
-```bash
-# Change port in .env
-PORT=3005  # Or another free port
-```
-
-2. Database Connection:
-```bash
-# Check PostgreSQL logs
-docker-compose logs postgres
-```
-
-3. MinIO Issues:
+1. MinIO Connection Issues:
 ```bash
 # Check MinIO logs
 docker-compose logs minio
+
+# Verify MinIO is running
+curl http://localhost:9000/minio/health/live
 ```
 
-4. Permission Issues:
+2. PostgreSQL Connection Issues:
 ```bash
-# Fix logs directory permissions
-chmod 777 logs/
+# Check PostgreSQL logs
+docker-compose logs postgres
+
+# Verify PostgreSQL connection
+npx prisma db pull
+```
+
+3. Environment Variables:
+   - Ensure all required variables are set in .env
+   - Check for proper MinIO bucket creation
+   - Verify PostgreSQL credentials
+
+### Service Management
+
+1. Restart services:
+```bash
+docker-compose restart
+```
+
+2. View logs:
+```bash
+docker-compose logs -f
+```
+
+3. Stop services:
+```bash
+docker-compose down
 ```
 
 ## Project Structure
@@ -336,318 +237,6 @@ fusion-brain/
 └── docker/             # Docker configs
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests
-5. Submit a pull request
-
 ## License
 
 MIT
-
-# Fusion Brain Image Generation Service
-
-## Technologies Used
-
-### Backend Framework
-- NestJS (v10.x) - Progressive Node.js framework
-- TypeScript (v5.x) - Typed JavaScript
-
-### Database & Storage
-- PostgreSQL (v14) - Primary database
-- Prisma (v5.x) - ORM and database migrations
-- MinIO - Object storage for images
-- Redis (optional) - Caching layer
-
-### Image Processing
-- Sharp - High performance image processing
-- Fusion Brain API - AI image generation
-
-### Testing
-- Jest - Unit and integration testing
-- Supertest - HTTP testing
-- Docker Compose - Test environment
-
-### Development Tools
-- ESLint - Code linting
-- Prettier - Code formatting
-- Swagger/OpenAPI - API documentation
-- Winston - Logging
-
-### DevOps & Deployment
-- Docker - Containerization
-- Docker Compose - Multi-container orchestration
-- GitHub Actions (optional) - CI/CD
-- Health checks - Application monitoring
-
-### Security
-- CORS configuration
-- Rate limiting
-- Input validation
-- Environment-based configurations
-
-## Database Configuration Guide
-
-### Available PostgreSQL Options
-
-1. **Local PostgreSQL (Docker)**
-   - Default development setup using Docker Compose
-   - Data persisted in Docker volumes
-   - Configured in `docker-compose.yml`
-
-2. **Neon PostgreSQL (Cloud)**
-   - Serverless PostgreSQL service
-   - No local database management needed
-   - Requires updating DATABASE_URL in environment files
-
-3. **Custom PostgreSQL Server**
-   - Self-hosted or other cloud providers
-   - Requires proper SSL/TLS configuration
-   - Connection string needs to be adjusted
-
-### Switching PostgreSQL Providers
-
-#### 1. Using Neon PostgreSQL (Current Setup)
-
-```env
-# Update .env file
-DATABASE_URL=postgresql://username:password@endpoint.neon.tech/dbname?sslmode=require
-
-# No need to run local PostgreSQL container
-# Remove or comment out PostgreSQL service in docker-compose.yml
-```
-
-#### 2. Using Local PostgreSQL (Docker)
-
-1. Update docker-compose.yml:
-```yaml
-services:
-  postgres:
-    image: postgres:14
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=fusion_brain
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d fusion_brain"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-```
-
-2. Update .env file:
-```env
-DATABASE_URL=postgresql://user:password@postgres:5432/fusion_brain
-```
-
-#### 3. Using Custom PostgreSQL
-
-1. Remove PostgreSQL service from docker-compose.yml if present
-2. Update .env with your custom PostgreSQL URL:
-```env
-DATABASE_URL=postgresql://user:password@your-server:5432/dbname?sslmode=prefer
-```
-
-### Environment-Specific Configurations
-
-#### Development Environment
-```env
-# .env.development
-DATABASE_URL=postgresql://user:password@localhost:5433/fusion_brain
-```
-
-#### Test Environment
-```env
-# .env.test
-DATABASE_URL=postgresql://test:test@test-db:5432/test_db
-```
-
-#### Production Environment
-```env
-# .env.production
-DATABASE_URL=postgresql://prod_user:prod_password@production-db:5432/fusion_brain
-```
-
-### Database Migration Process
-
-When switching database providers:
-
-1. Backup existing data (if needed):
-```bash
-# For local PostgreSQL
-npx prisma db pull > backup.sql
-
-# For Neon PostgreSQL
-neon database branch export main backup.sql
-```
-
-2. Update DATABASE_URL in your environment files
-
-3. Run migrations:
-```bash
-# Apply migrations to new database
-npx prisma migrate deploy
-
-# If schema changes are needed
-npx prisma migrate dev
-```
-
-4. Verify connection:
-```bash
-# Check database connection
-npx prisma studio
-```
-
-### Troubleshooting Database Connections
-
-1. SSL/TLS Issues:
-```bash
-# Test connection with SSL
-npx prisma db pull --preview-feature
-
-# Add SSL parameters if needed
-?sslmode=require&sslcert=path/to/cert
-```
-
-2. Connection Timeouts:
-```bash
-# Add connection timeout to URL
-?connect_timeout=30
-```
-
-3. Connection Pool Configuration:
-```typescript
-// Update prisma.service.ts
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-  connectionTimeout = 30
-  pool = {
-    min = 2
-    max = 10
-  }
-}
-```
-
-### Health Checks
-
-Database health checks are configured in:
-- `src/modules/health/indicators/prisma.health.ts`
-- Docker Compose service definitions
-
-Update timeouts and retry settings based on your PostgreSQL provider:
-
-```yaml
-# docker-compose.yml
-healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-  interval: 30s
-  timeout: 10s
-  retries: 3
-```
-
-### Security Considerations
-
-1. **Local Development**
-   - Use default credentials
-   - Data persisted in Docker volumes
-   - No SSL required
-
-2. **Production (Cloud/Custom)**
-   - Use strong passwords
-   - Enable SSL/TLS
-   - Implement connection pooling
-   - Set appropriate timeouts
-   - Use least-privilege database users
-
-Remember to never commit sensitive database credentials to version control. Always use environment variables for sensitive configuration.
-
-### Common Issues and Solutions
-
-#### Windows-Specific Issues
-
-1. **Logs Directory Error**
-   ```bash
-   # Create logs directory before starting the application
-   mkdir logs
-   
-   # Set proper permissions
-   icacls logs /grant Users:(OI)(CI)F
-   ```
-
-#### PostgreSQL Connection Issues
-
-1. **Connection Termination**
-   
-   If you see "terminating connection due to administrator command" error:
-
-   ```bash
-   # 1. Stop all running containers
-   docker-compose down
-
-   # 2. Clear PostgreSQL connection pool
-   npx prisma db push --force-reset
-
-   # 3. Restart the application
-   docker-compose up -d
-   ```
-
-2. **Connection Pool Management**
-   
-   Add to your Prisma schema:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-     relationMode = "prisma"
-   }
-   ```
-
-   Environment variables for connection pool:
-   ```env
-   DATABASE_CONNECTION_LIMIT=5
-   DATABASE_POOL_TIMEOUT=30
-   ```
-
-#### Development vs Production Database
-
-1. **Local Development**
-   ```bash
-   # Start only MinIO (using Neon PostgreSQL)
-   docker-compose up -d minio
-   
-   # Start the application
-   npm run start:dev
-   ```
-
-2. **Production Setup**
-   ```bash
-   # Using Neon PostgreSQL
-   docker-compose -f docker-compose.prod.yml up -d
-
-   # Verify database connection
-   curl http://localhost:3000/health
-   ```
-
-#### Database Connection Verification
-
-```bash
-# Test database connection
-npx prisma db pull
-
-# If connection fails, verify SSL settings
-DATABASE_URL="postgresql://user:password@host:5432/dbname?sslmode=require&connection_limit=5"
-```
-
-Remember to:
-- Always use SSL in production
-- Set appropriate connection pool limits
-- Handle connection timeouts
-- Implement proper error handling
