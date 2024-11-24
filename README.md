@@ -22,50 +22,6 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository for image generation using Fusion Brain API.
-
-## Technologies Used
-
-### Core Technologies
-- **NestJS** (v10.x) - Progressive Node.js framework
-- **TypeScript** (v5.x) - Typed JavaScript
-- **Node.js** (v18+) - JavaScript runtime
-
-### Database & Storage
-- **PostgreSQL** (v14) - Primary database
-- **Prisma** (v5.x) - ORM and database migrations
-- **MinIO** - Object storage for images
-
-### Image Processing
-- **Sharp** - High-performance image processing
-- **Fusion Brain API** - AI image generation
-
-### API Documentation & Testing
-- **Swagger/OpenAPI** - API documentation
-- **Jest** - Testing framework
-- **Supertest** - HTTP testing
-
-### Development Tools
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-- **Docker** - Containerization
-- **Docker Compose** - Container orchestration
-
-### Security & Monitoring
-- **CORS** - Cross-Origin Resource Sharing
-- **Helmet** - HTTP security headers
-- **Class Validator** - Input validation
-- **Winston** - Logging
-
-## Prerequisites
-
-Before starting, ensure you have installed:
-1. Git
-2. Docker Desktop (latest version)
-3. Node.js (v18+)
-4. npm or yarn
 
 ## Initial Setup
 
@@ -237,6 +193,47 @@ fusion-brain/
 └── docker/             # Docker configs
 ```
 
-## License
+## Description
 
-MIT
+[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository for image generation using Fusion Brain API.
+
+## Technologies Used
+
+### Core Technologies
+- **NestJS** (v10.x) - Progressive Node.js framework
+- **TypeScript** (v5.x) - Typed JavaScript
+- **Node.js** (v18+) - JavaScript runtime
+
+### Database & Storage
+- **PostgreSQL** (v14) - Primary database
+- **Prisma** (v5.x) - ORM and database migrations
+- **MinIO** - Object storage for images
+
+### Image Processing
+- **Sharp** - High-performance image processing
+- **Fusion Brain API** - AI image generation
+
+### API Documentation & Testing
+- **Swagger/OpenAPI** - API documentation
+- **Jest** - Testing framework
+- **Supertest** - HTTP testing
+
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Docker** - Containerization
+- **Docker Compose** - Container orchestration
+
+### Security & Monitoring
+- **CORS** - Cross-Origin Resource Sharing
+- **Helmet** - HTTP security headers
+- **Class Validator** - Input validation
+- **Winston** - Logging
+
+## Prerequisites
+
+Before starting, ensure you have installed:
+1. Git
+2. Docker Desktop (latest version)
+3. Node.js (v18+)
+4. npm or yarn
