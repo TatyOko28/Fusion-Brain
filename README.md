@@ -242,13 +242,13 @@ Before starting, ensure you have installed:
 
 ## Screenshots
 <div style="display: flex; flex-wrap: wrap; justify-content: center;">
-  <img src="/photos/1.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/2.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/3.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/4.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/5.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/6.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/7.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/1.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/2.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/3.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/4.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/5.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/6.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/7.png" width="200" alt="Product details Screen"/>
   <img src="/photos/8.png" width="200" alt="Product details Screen"/>
 </div>
 
