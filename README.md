@@ -249,7 +249,7 @@ Before starting, ensure you have installed:
   <img src="/Photos/5.png" width="200" alt="Product details Screen"/>
   <img src="/Photos/6.png" width="200" alt="Product details Screen"/>
   <img src="/Photos/7.png" width="200" alt="Product details Screen"/>
-  <img src="/photos/8.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/8.png" width="200" alt="Product details Screen"/>
 </div>
 
 ---
