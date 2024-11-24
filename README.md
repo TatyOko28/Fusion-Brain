@@ -250,6 +250,32 @@ Before starting, ensure you have installed:
   <img src="/Photos/6.png" width="200" alt="Product details Screen"/>
   <img src="/Photos/7.png" width="200" alt="Product details Screen"/>
   <img src="/Photos/8.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/9.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/10.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/11.png" width="200" alt="Product details Screen"/>
+  <img src="/Photos/12.png" width="200" alt="Product details Screen"/>
 </div>
 
 ---
+
+## Testing
+
+1. Run unit tests:
+```bash
+npm run test
+```
+
+2. Run e2e tests:
+```bash
+npm run test:e2e
+```
+
+3. Run test coverage:
+```bash
+npm run test:cov
+```
+
+4. Run tests in watch mode:
+```bash
+npm run test:watch
+```
